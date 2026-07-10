@@ -1,0 +1,193 @@
+---
+import AdminLayout from '../../../../../layouts/AdminLayout.astro';
+import { supabaseServer } from '../../../../../lib/supabaseServer';
+
+export const prerender = false;
+
+export async function getStaticPaths() {
+  const { data: heroes } = await supabaseServer.from('hero_slider').select('id');
+
+  return (
+    heroes?.map((hero) => ({
+      params: { id: String(hero.id) },
+    })) || []
+  );
+}
+
+const { id } = Astro.params;
+
+const { data: hero } = await supabaseServer
+  .from('hero_slider')
+  .select('*')
+  .eq('id', Number(id))
+  .single();
+---
+
+<AdminLayout title="Edit Hero">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold">Edit Hero</h1>
+  </div>
+
+  <form id="edit-form" class="grid gap-8 lg:grid-cols-3">
+    <div class="space-y-6 lg:col-span-2">
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Judul</label>
+        <input
+          id="title"
+          name="title"
+          value={hero?.title || ''}
+          class="w-full rounded-xl border px-4 py-3"
+        />
+      </div>
+
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Subtitle</label>
+        <textarea id="subtitle" name="subtitle" rows="4" class="w-full rounded-xl border px-4 py-3"
+          >{hero?.subtitle || ''}</textarea
+        >
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Gambar Saat Ini</label>
+        {hero?.image && <img src={hero.image} class="w-full h-40 object-cover rounded-lg mb-4" />}
+        <label class="block mb-2 text-sm text-gray-500">Upload Gambar Baru (Opsional)</label>
+        <input
+          id="image"
+          name="image"
+          type="file"
+          accept="image/*"
+          class="w-full rounded-xl border px-4 py-3"
+        />
+        <div id="upload-status" class="text-sm mt-2 text-gray-500"></div>
+      </div>
+
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Urutan</label>
+        <input
+          id="sort"
+          name="sort_order"
+          type="number"
+          value={hero?.sort_order || 1}
+          class="w-full rounded-xl border px-4 py-3"
+        />
+      </div>
+
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Status</label>
+        <select id="is_active" name="is_active" class="w-full rounded-xl border px-4 py-3">
+          <option value="true" selected={hero?.is_active === true}>Aktif</option>
+          <option value="false" selected={hero?.is_active === false}>Nonaktif</option>
+        </select>
+      </div>
+
+      <div class="flex gap-3">
+        <a
+          href="/admin/website/hero"
+          class="w-full rounded-xl bg-gray-300 py-3 text-center text-gray-700 hover:bg-gray-400"
+        >
+          Batal
+        </a>
+        <button
+          type="submit"
+          class="w-full rounded-xl bg-blue-600 py-3 text-white hover:bg-blue-700"
+        >
+          Update Hero
+        </button>
+      </div>
+    </div>
+  </form>
+</AdminLayout>
+
+<script is:inline>
+  const form = document.querySelector('#edit-form');
+  const statusDiv = document.querySelector('#upload-status');
+
+  const currentUrl = window.location.pathname;
+  const id = currentUrl.split('/').pop();
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const title = document.querySelector('#title').value;
+    const subtitle = document.querySelector('#subtitle').value;
+    const sort_order = Number(document.querySelector('#sort').value);
+    const is_active = document.querySelector('#is_active').value === 'true';
+    const fileInput = document.querySelector('#image');
+    const file = fileInput?.files[0];
+
+    let imageUrl = null;
+
+    if (file) {
+      statusDiv.textContent = 'Uploading gambar baru...';
+      statusDiv.style.color = 'blue';
+
+      try {
+        const uploadFormData = new FormData();
+        uploadFormData.append('image', file);
+
+        const uploadRes = await fetch('/api/hero/upload', {
+          method: 'POST',
+          body: uploadFormData,
+        });
+
+        const uploadResult = await uploadRes.json();
+
+        if (!uploadRes.ok) {
+          throw new Error(uploadResult.error || 'Upload gagal');
+        }
+
+        imageUrl = uploadResult.url;
+        statusDiv.textContent = 'Upload berhasil!';
+        statusDiv.style.color = 'green';
+      } catch (error) {
+        statusDiv.textContent = 'Error: ' + error.message;
+        statusDiv.style.color = 'red';
+        alert('Gagal upload: ' + error.message);
+        return;
+      }
+    }
+
+    statusDiv.textContent = 'Menyimpan perubahan...';
+    statusDiv.style.color = 'blue';
+
+    try {
+      const payload = {
+        id: Number(id),
+        title: title,
+        subtitle: subtitle || '',
+        button_text: 'Daftar Sekarang',
+        button_link: '/informasi/mandiri',
+        sort_order: sort_order || 1,
+        is_active: is_active,
+      };
+
+      if (imageUrl) {
+        payload.image = imageUrl;
+      }
+
+      const response = await fetch('/api/hero/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Gagal update');
+      }
+
+      alert('Hero berhasil diupdate!');
+      window.location.href = '/admin/website/hero';
+    } catch (error) {
+      console.error('Error:', error);
+      statusDiv.textContent = 'Error: ' + error.message;
+      statusDiv.style.color = 'red';
+      alert('Gagal: ' + error.message);
+    }
+  });
+</script>

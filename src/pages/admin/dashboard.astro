@@ -1,0 +1,73 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Dashboard">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold">Dashboard</h1>
+
+    <p class="mt-2 text-slate-500">Selamat datang di CMS KKA Radar.</p>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-4">
+    <div class="rounded-2xl border bg-white p-6">
+      <p class="text-slate-500">Hero Slider</p>
+
+      <h2 class="mt-4 text-5xl font-bold">3</h2>
+    </div>
+
+    <div class="rounded-2xl border bg-white p-6">
+      <p class="text-slate-500">Artikel</p>
+
+      <h2 class="mt-4 text-5xl font-bold">21</h2>
+    </div>
+
+    <div class="rounded-2xl border bg-white p-6">
+      <p class="text-slate-500">Galeri</p>
+
+      <h2 class="mt-4 text-5xl font-bold">142</h2>
+    </div>
+
+    <div class="rounded-2xl border bg-white p-6">
+      <p class="text-slate-500">Mentor</p>
+
+      <h2 class="mt-4 text-5xl font-bold">15</h2>
+    </div>
+  </div>
+
+  <div class="mt-8 grid gap-6 lg:grid-cols-2">
+    <div class="rounded-2xl border bg-white p-6">
+      <h2 class="mb-5 text-xl font-semibold">Aktivitas Terbaru</h2>
+
+      <div class="space-y-4">
+        <div class="rounded-xl bg-slate-100 p-4">Hero berhasil diperbarui</div>
+
+        <div class="rounded-xl bg-slate-100 p-4">Artikel baru ditambahkan</div>
+
+        <div class="rounded-xl bg-slate-100 p-4">Galeri berhasil diupload</div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border bg-white p-6">
+      <h2 class="mb-5 text-xl font-semibold">Quick Menu</h2>
+
+      <div class="grid grid-cols-2 gap-4">
+        <a href="/admin/website/hero" class="rounded-xl border p-5 text-center hover:bg-slate-100">
+          Hero
+        </a>
+
+        <a href="/admin/blog" class="rounded-xl border p-5 text-center hover:bg-slate-100">
+          Blog
+        </a>
+
+        <a href="/admin/gallery" class="rounded-xl border p-5 text-center hover:bg-slate-100">
+          Galeri
+        </a>
+
+        <a href="/admin/regulation" class="rounded-xl border p-5 text-center hover:bg-slate-100">
+          Regulasi
+        </a>
+      </div>
+    </div>
+  </div>
+</AdminLayout>

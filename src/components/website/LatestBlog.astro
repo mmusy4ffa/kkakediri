@@ -1,0 +1,58 @@
+---
+const blogs = [
+  {
+    title: 'Pendaftaran Gelombang 1 Dibuka',
+    image: 'https://placehold.co/600x400',
+    date: '09 Juli 2026',
+    category: 'Informasi',
+  },
+  {
+    title: 'Pelaksanaan Uji Kompetensi',
+    image: 'https://placehold.co/600x400',
+    date: '05 Juli 2026',
+    category: 'Berita',
+  },
+  {
+    title: 'Kerjasama Dengan Kampus',
+    image: 'https://placehold.co/600x400',
+    date: '02 Juli 2026',
+    category: 'Pengumuman',
+  },
+];
+---
+
+<section class="bg-white py-24">
+  <div class="mx-auto max-w-7xl px-6">
+    <div class="mb-16 flex items-end justify-between">
+      <div>
+        <span class="font-semibold text-blue-600"> BLOG </span>
+
+        <h2 class="mt-3 text-5xl font-bold">Berita Terbaru</h2>
+      </div>
+
+      <a href="/blog" class="font-semibold text-blue-600"> Lihat Semua → </a>
+    </div>
+
+    <div class="grid gap-8 md:grid-cols-3">
+      {
+        blogs.map((blog) => (
+          <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-xl">
+            <img src={blog.image} class="h-56 w-full object-cover" />
+
+            <div class="p-6">
+              <span class="text-sm text-blue-600">{blog.category}</span>
+
+              <h3 class="mt-3 text-2xl font-bold">{blog.title}</h3>
+
+              <p class="mt-4 text-slate-500">{blog.date}</p>
+
+              <a href="/blog" class="mt-6 inline-block font-semibold text-blue-600">
+                Baca Selengkapnya →
+              </a>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

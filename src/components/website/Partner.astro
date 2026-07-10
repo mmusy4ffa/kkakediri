@@ -1,0 +1,25 @@
+---
+const partners = [
+  '/partner/1.png',
+  '/partner/2.png',
+  '/partner/3.png',
+  '/partner/4.png',
+  '/partner/5.png',
+];
+---
+
+<section class="bg-white py-20">
+  <div class="mx-auto max-w-7xl px-6">
+    <h2 class="mb-12 text-center text-4xl font-bold">Partner Kami</h2>
+
+    <div class="grid grid-cols-2 gap-8 md:grid-cols-5">
+      {
+        partners.map((partner) => (
+          <div class="rounded-2xl border border-slate-200 p-6">
+            <img src={partner} class="mx-auto h-16 object-contain" />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

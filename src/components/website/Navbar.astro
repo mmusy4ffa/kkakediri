@@ -1,0 +1,65 @@
+---
+const menus = [
+  { title: 'Home', href: '/' },
+  { title: 'Tentang KKA', href: '/tentang' },
+  {
+    title: 'Informasi',
+    dropdown: [
+      {
+        title: 'Pendaftaran Mandiri',
+        href: '/informasi/mandiri',
+      },
+      {
+        title: 'Pendaftaran Kolektif',
+        href: '/informasi/kolektif',
+      },
+    ],
+  },
+  { title: 'Regulasi', href: '/regulasi' },
+  { title: 'Galeri', href: '/galeri' },
+  { title: 'Kontak', href: '/kontak' },
+  { title: 'Blog', href: '/blog' },
+];
+---
+
+<header class="sticky top-0 z-50 bg-white shadow-sm">
+  <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+    <a href="/" class="flex items-center gap-3">
+      <img src="/logo.png" class="h-12" alt="Logo" />
+
+      <div>
+        <h2 class="font-bold text-blue-700">KKA RADAR</h2>
+
+        <p class="text-sm text-slate-500">Kediri</p>
+      </div>
+    </a>
+
+    <nav>
+      <ul class="flex items-center gap-8">
+        {
+          menus.map((menu) =>
+            menu.dropdown ? (
+              <li class="group relative">
+                <button class="font-medium">{menu.title}</button>
+
+                <div class="absolute left-0 top-full hidden w-64 rounded-xl border bg-white shadow-xl group-hover:block">
+                  {menu.dropdown.map((item) => (
+                    <a href={item.href} class="block px-5 py-4 hover:bg-slate-100">
+                      {item.title}
+                    </a>
+                  ))}
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a href={menu.href} class="font-medium hover:text-blue-600">
+                  {menu.title}
+                </a>
+              </li>
+            )
+          )
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

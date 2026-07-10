@@ -1,0 +1,35 @@
+---
+const galleries = [
+  '/gallery/1.jpg',
+  '/gallery/2.jpg',
+  '/gallery/3.jpg',
+  '/gallery/4.jpg',
+  '/gallery/5.jpg',
+  '/gallery/6.jpg',
+];
+---
+
+<section class="bg-slate-50 py-24">
+  <div class="mx-auto max-w-7xl px-6">
+    <div class="mb-16 text-center">
+      <span class="font-semibold text-blue-600"> GALERI </span>
+
+      <h2 class="mt-3 text-5xl font-bold">Dokumentasi Kegiatan</h2>
+
+      <p class="mt-4 text-slate-500">Beberapa kegiatan KKA Radar.</p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-3">
+      {
+        galleries.map((image) => (
+          <div class="overflow-hidden rounded-3xl">
+            <img
+              src={image}
+              class="h-80 w-full object-cover transition duration-500 hover:scale-110"
+            />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

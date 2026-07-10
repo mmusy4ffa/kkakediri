@@ -1,0 +1,40 @@
+---
+const title = 'Login Admin';
+import '../../styles/global.css';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width" />
+
+    <title>{title}</title>
+  </head>
+
+  <body class="flex min-h-screen items-center justify-center bg-slate-100">
+    <div class="w-full max-w-md rounded-2xl bg-white p-10 shadow">
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-blue-600">KKA RADAR</h1>
+
+        <p class="mt-2 text-slate-500">Content Management System</p>
+      </div>
+
+      <form class="space-y-5">
+        <div>
+          <label class="mb-2 block"> Email </label>
+
+          <input type="email" class="w-full rounded-xl border px-4 py-3" />
+        </div>
+
+        <div>
+          <label class="mb-2 block"> Password </label>
+
+          <input type="password" class="w-full rounded-xl border px-4 py-3" />
+        </div>
+
+        <button class="w-full rounded-xl bg-blue-600 py-3 text-white"> Login </button>
+      </form>
+    </div>
+  </body>
+</html>

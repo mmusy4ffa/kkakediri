@@ -1,0 +1,36 @@
+---
+import { getVisions } from '../../services/vision';
+
+const visions = await getVisions();
+const activeVisions = visions
+  .filter((v) => v.is_active)
+  .sort((a, b) => a.sort_order - b.sort_order);
+---
+
+<section class="bg-slate-50 py-16">
+  <div class="container mx-auto px-4">
+    <div class="mb-12 text-center">
+      <h2 class="text-3xl font-bold md:text-4xl">Visi & Misi</h2>
+      <p class="mt-2 text-slate-500">
+        Mewujudkan generasi unggul melalui kompetisi akademik berkualitas
+      </p>
+    </div>
+
+    <div class="flex justify-center">
+      <div class="grid gap-8 md:grid-cols-2 max-w-4xl w-full">
+        {
+          activeVisions.length > 0 ? (
+            activeVisions.map((vision) => (
+              <div class="rounded-2xl bg-white p-8 shadow-lg transition hover:shadow-xl">
+                <h3 class="mb-3 text-xl font-bold">{vision.title}</h3>
+                <p class="text-slate-600 leading-relaxed">{vision.description}</p>
+              </div>
+            ))
+          ) : (
+            <p class="col-span-2 text-center text-slate-500">Belum ada data visi misi.</p>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

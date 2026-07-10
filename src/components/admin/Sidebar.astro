@@ -1,0 +1,82 @@
+---
+const pathname = Astro.url.pathname;
+
+const menus = [
+  {
+    title: 'Dashboard',
+    items: [{ name: 'Dashboard', url: '/admin/dashboard' }],
+  },
+  {
+    title: 'Kelola Website',
+    items: [
+      { name: 'Hero Slider', url: '/admin/website/hero' },
+      { name: 'Visi Misi', url: '/admin/website/vision' },
+      { name: 'Tentang', url: '/admin/website/about' },
+      { name: 'Footer', url: '/admin/website/footer' },
+    ],
+  },
+  {
+    title: 'Informasi',
+    items: [
+      { name: 'Pendaftaran Mandiri', url: '/admin/registration/mandiri' },
+      { name: 'Pendaftaran Kolektif', url: '/admin/registration/kolektif' },
+    ],
+  },
+  {
+    title: 'Konten',
+    items: [
+      { name: 'Blog', url: '/admin/blog' },
+      { name: 'Galeri', url: '/admin/gallery' },
+      { name: 'Regulasi', url: '/admin/regulation' },
+    ],
+  },
+  {
+    title: 'Master Data',
+    items: [
+      { name: 'Mentor', url: '/admin/mentor' },
+      { name: 'Dosen', url: '/admin/dosen' },
+      { name: 'Kontak', url: '/admin/contact' },
+    ],
+  },
+  {
+    title: 'Manajemen',
+    items: [
+      { name: 'Pengguna', url: '/admin/users' },
+      { name: 'Profil Saya', url: '/admin/profile' },
+    ],
+  },
+];
+---
+
+<aside class="fixed left-0 top-0 h-screen w-72 overflow-y-auto border-r border-slate-200 bg-white">
+  <div class="border-b border-slate-200 p-6">
+    <h1 class="text-2xl font-bold text-blue-600">KKA RADAR</h1>
+    <p class="text-sm text-slate-500">Content Management System</p>
+  </div>
+
+  <div class="p-4">
+    {
+      menus.map((group) => (
+        <div class="mb-6">
+          <p class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            {group.title}
+          </p>
+
+          {group.items.map((menu) => (
+            <a
+              href={menu.url}
+              class:list={[
+                'mb-1 block rounded-lg px-4 py-3 transition',
+                pathname === menu.url
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-700 hover:bg-slate-100',
+              ]}
+            >
+              {menu.name}
+            </a>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</aside>

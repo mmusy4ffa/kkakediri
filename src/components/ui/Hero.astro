@@ -1,0 +1,91 @@
+<section class="relative h-[700px]">
+  <div class="swiper heroSwiper h-full">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">
+        <div
+          class="flex h-full items-center bg-cover bg-center"
+          style="background-image:url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1600')"
+        >
+          <div class="mx-auto max-w-7xl px-6">
+            <div class="max-w-xl rounded-3xl bg-white/80 p-10 backdrop-blur">
+              <p class="mb-3 text-blue-600 font-semibold">Selamat Datang</p>
+
+              <h1 class="text-6xl font-bold leading-tight">KKA RADAR</h1>
+
+              <p class="mt-6 text-slate-600">
+                Website resmi KKA RADAR sebagai media informasi, pendaftaran, regulasi dan berbagai
+                kegiatan.
+              </p>
+
+              <a
+                href="/informasi/mandiri"
+                class="mt-8 inline-block rounded-xl bg-blue-600 px-6 py-3 text-white"
+              >
+                Daftar Sekarang
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div
+          class="flex h-full items-center bg-cover bg-center"
+          style="background-image:url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1600')"
+        >
+          <div class="mx-auto max-w-7xl px-6">
+            <div class="max-w-xl rounded-3xl bg-white/80 p-10 backdrop-blur">
+              <p class="mb-3 text-blue-600 font-semibold">Pendidikan</p>
+
+              <h1 class="text-6xl font-bold">Menjadi Generasi Unggul</h1>
+
+              <p class="mt-6 text-slate-600">
+                Bersama KKA RADAR membentuk karakter yang disiplin dan profesional.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div
+          class="flex h-full items-center bg-cover bg-center"
+          style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600')"
+        >
+          <div class="mx-auto max-w-7xl px-6">
+            <div class="max-w-xl rounded-3xl bg-white/80 p-10 backdrop-blur">
+              <h1 class="text-6xl font-bold">Bersama Berkembang</h1>
+
+              <p class="mt-6 text-slate-600">Informasi kegiatan terbaru tersedia setiap hari.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="swiper-pagination"></div>
+  </div>
+</section>
+
+<script>
+  import Swiper from 'swiper';
+  import { Autoplay, Pagination } from 'swiper/modules';
+
+  import 'swiper/css';
+  import 'swiper/css/pagination';
+
+  new Swiper('.heroSwiper', {
+    modules: [Autoplay, Pagination],
+
+    loop: true,
+
+    autoplay: {
+      delay: 5000,
+    },
+
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+  });
+</script>

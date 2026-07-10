@@ -1,0 +1,40 @@
+---
+const slides = ['/banner1.jpg', '/banner2.jpg', '/banner3.jpg'];
+---
+
+<div id="carousel" class="relative overflow-hidden rounded-3xl">
+  {
+    slides.map((slide, index) => (
+      <img
+        src={slide}
+        class:list={[
+          'absolute inset-0 h-full w-full object-cover transition-opacity duration-700',
+
+          index === 0 ? 'opacity-100' : 'opacity-0',
+        ]}
+      />
+    ))
+  }
+</div>
+
+<script is:inline>
+  const images = document.querySelectorAll('#carousel img');
+
+  let current = 0;
+
+  setInterval(() => {
+    images[current].classList.remove('opacity-100');
+
+    images[current].classList.add('opacity-0');
+
+    current++;
+
+    if (current >= images.length) {
+      current = 0;
+    }
+
+    images[current].classList.remove('opacity-0');
+
+    images[current].classList.add('opacity-100');
+  }, 5000);
+</script>

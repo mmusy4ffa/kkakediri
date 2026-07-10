@@ -1,0 +1,135 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Tambah Hero">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold">Tambah Hero</h1>
+  </div>
+
+  <form id="hero-form" class="grid gap-8 lg:grid-cols-3">
+    <div class="space-y-6 lg:col-span-2">
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Judul</label>
+        <input id="title" name="title" class="w-full rounded-xl border px-4 py-3" />
+      </div>
+
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Subtitle</label>
+        <textarea id="subtitle" name="subtitle" rows="4" class="w-full rounded-xl border px-4 py-3"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Upload Gambar</label>
+        <input
+          id="image"
+          name="image"
+          type="file"
+          accept="image/*"
+          required
+          class="w-full rounded-xl border px-4 py-3"
+        />
+        <div id="upload-status" class="text-sm mt-2 text-gray-500"></div>
+      </div>
+
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Urutan</label>
+        <input
+          id="sort"
+          name="sort_order"
+          type="number"
+          value="1"
+          class="w-full rounded-xl border px-4 py-3"
+        />
+      </div>
+
+      <div class="rounded-2xl border bg-white p-6">
+        <label class="block mb-2">Status</label>
+        <select id="is_active" name="is_active" class="w-full rounded-xl border px-4 py-3">
+          <option value="true">Aktif</option>
+          <option value="false">Nonaktif</option>
+        </select>
+      </div>
+
+      <button type="submit" class="w-full rounded-xl bg-blue-600 py-3 text-white">
+        Simpan Hero
+      </button>
+    </div>
+  </form>
+</AdminLayout>
+
+<script is:inline>
+  const form = document.querySelector('#hero-form');
+  const statusDiv = document.querySelector('#upload-status');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const title = document.querySelector('#title').value;
+    const subtitle = document.querySelector('#subtitle').value;
+    const sort_order = Number(document.querySelector('#sort').value);
+    const is_active = document.querySelector('#is_active').value === 'true';
+    const fileInput = document.querySelector('#image');
+    const file = fileInput.files[0];
+
+    if (!file) {
+      alert('Pilih gambar terlebih dahulu');
+      return;
+    }
+
+    statusDiv.textContent = 'Uploading gambar...';
+    statusDiv.style.color = 'blue';
+
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append('image', file);
+
+      const uploadRes = await fetch('/api/hero/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      });
+
+      const uploadResult = await uploadRes.json();
+
+      if (!uploadRes.ok) {
+        throw new Error(uploadResult.error || 'Upload gagal');
+      }
+
+      statusDiv.textContent = 'Upload berhasil! Menyimpan data...';
+      statusDiv.style.color = 'green';
+
+      const response = await fetch('/api/hero/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          subtitle: subtitle || '',
+          button_text: 'Daftar Sekarang',
+          button_link: '/informasi/mandiri',
+          image: uploadResult.url,
+          sort_order: sort_order || 1,
+          is_active: is_active,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Gagal menyimpan');
+      }
+
+      alert('Hero berhasil ditambahkan!');
+      window.location.href = '/admin/website/hero';
+    } catch (error) {
+      console.error('Error:', error);
+      statusDiv.textContent = 'Error: ' + error.message;
+      statusDiv.style.color = 'red';
+      alert('Gagal: ' + error.message);
+    }
+  });
+</script>

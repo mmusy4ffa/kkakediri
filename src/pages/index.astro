@@ -1,17 +1,38 @@
 ---
-
+import MainLayout from '../layouts/MainLayout.astro';
+import LatestBlog from '../components/website/LatestBlog.astro';
+import Navbar from '../components/website/Navbar.astro';
+import Hero from '../components/website/Hero.astro';
+import RegistrationFlow from '../components/website/RegistrationFlow.astro';
+import About from '../components/website/About.astro';
+import Gallery from '../components/website/Gallery.astro';
+import Partner from '../components/website/Partner.astro';
+import Footer from '../components/website/Footer.astro';
+import VisionMission from '../components/website/VisionMission.astro';
+import ProgramSection from '../components/website/ProgramSection.astro';
+import Statistics from '../components/website/Statistics.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<MainLayout title="KKA Radar Kediri">
+  <Navbar />
+
+  <Hero />
+
+  <About />
+
+  <VisionMission />
+
+  <ProgramSection />
+
+  <Statistics />
+
+  <RegistrationFlow />
+
+  <LatestBlog />
+
+  <Gallery />
+
+  <Partner />
+
+  <Footer />
+</MainLayout>
