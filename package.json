@@ -28,5 +28,10 @@
     "prettier": "^3.9.4",
     "prettier-plugin-astro": "^0.14.1",
     "tailwindcss": "^4.3.2"
+  },
+  "overrides": {
+    "nama-package-bandel": {
+      "astro": "^7.0.7"
+    }
   }
 }
