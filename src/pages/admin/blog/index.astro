@@ -1,114 +1,86 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { supabaseServer } from '../../../lib/supabaseServer';
 
-const blogs = [
-  {
-    id: 1,
-    title: 'Pendaftaran KKA Tahun 2026',
-    category: 'Informasi',
-    status: 'Publish',
-    author: 'Admin',
-    created_at: '09 Juli 2026',
-    thumbnail: 'https://placehold.co/120x80',
-  },
-  {
-    id: 2,
-    title: 'Pelaksanaan Tes Gelombang 1',
-    category: 'Berita',
-    status: 'Draft',
-    author: 'Admin',
-    created_at: '08 Juli 2026',
-    thumbnail: 'https://placehold.co/120x80',
-  },
-];
+export const prerender = false;
+
+const { data: blogs, error } = await supabaseServer
+  .from('blogs')
+  .select('*')
+  .order('published_at', { ascending: false });
 ---
 
 <AdminLayout title="Blog">
   <div class="mb-8 flex items-center justify-between">
     <div>
       <h1 class="text-3xl font-bold">Blog</h1>
-
-      <p class="mt-2 text-slate-500">Kelola seluruh artikel website.</p>
+      <p class="mt-2 text-slate-500">Kelola artikel blog website.</p>
     </div>
 
     <a
       href="/admin/blog/create"
       class="rounded-xl bg-blue-600 px-5 py-3 text-white hover:bg-blue-700"
     >
-      + Tambah Artikel
+      Tambah
     </a>
   </div>
 
-  <div class="mb-6 flex gap-4">
-    <input
-      type="text"
-      placeholder="Cari artikel..."
-      class="w-80 rounded-xl border border-slate-300 px-4 py-3"
-    />
-
-    <select class="rounded-xl border border-slate-300 px-4 py-3">
-      <option>Semua Status</option>
-
-      <option>Publish</option>
-
-      <option>Draft</option>
-    </select>
-  </div>
-
-  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+  <div class="overflow-hidden rounded-2xl border bg-white">
     <table class="w-full">
       <thead class="bg-slate-50">
         <tr>
-          <th class="p-4 text-left">Thumbnail</th>
-
-          <th class="p-4 text-left">Judul</th>
-
-          <th class="p-4 text-left">Kategori</th>
-
+          <th class="p-4 text-left">Gambar</th>
+          <th class="p-4 text-left">Title</th>
+          <th class="p-4 text-left">Slug</th>
           <th class="p-4 text-left">Status</th>
-
-          <th class="p-4 text-left">Penulis</th>
-
-          <th class="p-4 text-left">Tanggal</th>
-
-          <th class="p-4 text-center">Aksi</th>
+          <th class="p-4 text-left">Aksi</th>
         </tr>
       </thead>
-
       <tbody>
         {
-          blogs.map((blog) => (
+          blogs?.map((item) => (
             <tr class="border-t">
               <td class="p-4">
-                <img src={blog.thumbnail} class="h-16 w-24 rounded-lg object-cover" />
-              </td>
-
-              <td class="p-4">{blog.title}</td>
-
-              <td class="p-4">{blog.category}</td>
-
-              <td class="p-4">
-                {blog.status === 'Publish' ? (
-                  <span class="rounded-full bg-green-100 px-3 py-1 text-green-700">Publish</span>
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    class="w-20 h-16 object-cover rounded-lg"
+                  />
                 ) : (
-                  <span class="rounded-full bg-yellow-100 px-3 py-1 text-yellow-700">Draft</span>
+                  <div class="w-20 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">
+                    No image
+                  </div>
                 )}
               </td>
-
-              <td class="p-4">{blog.author}</td>
-
-              <td class="p-4">{blog.created_at}</td>
-
+              <td class="p-4 font-semibold">{item.title}</td>
+              <td class="p-4 text-sm text-blue-600">
+                <a href={`/blog/${item.slug}`} target="_blank" class="hover:underline">
+                  {item.slug}
+                </a>
+              </td>
               <td class="p-4">
-                <div class="flex justify-center gap-3">
+                {item.is_active ? (
+                  <span class="rounded-full bg-green-100 px-3 py-1 text-green-700">Aktif</span>
+                ) : (
+                  <span class="rounded-full bg-red-100 px-3 py-1 text-red-700">Nonaktif</span>
+                )}
+              </td>
+              <td class="p-4">
+                <div class="flex gap-3">
                   <a
-                    href={`/admin/blog/edit/${blog.id}`}
-                    class="rounded-lg bg-blue-600 px-4 py-2 text-white"
+                    href={`/admin/blog/edit/${item.id}`}
+                    class="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
                   >
                     Edit
                   </a>
-
-                  <button class="rounded-lg bg-red-600 px-4 py-2 text-white">Hapus</button>
+                  <button
+                    data-id={item.id}
+                    data-title={item.title}
+                    class="delete-btn rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                  >
+                    Hapus
+                  </button>
                 </div>
               </td>
             </tr>
@@ -116,5 +88,46 @@ const blogs = [
         }
       </tbody>
     </table>
+
+    {
+      blogs?.length === 0 && (
+        <div class="p-8 text-center text-slate-500">Belum ada artikel blog.</div>
+      )
+    }
   </div>
 </AdminLayout>
+
+<script is:inline>
+  document.querySelectorAll('.delete-btn').forEach(function (btn) {
+    btn.addEventListener('click', async function () {
+      const id = this.dataset.id;
+      const title = this.dataset.title;
+
+      if (!confirm('Yakin ingin menghapus "' + title + '"?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/blog/delete', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: Number(id) }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Gagal menghapus');
+        }
+
+        alert('Berhasil dihapus!');
+        location.reload();
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Gagal menghapus: ' + error.message);
+      }
+    });
+  });
+</script>

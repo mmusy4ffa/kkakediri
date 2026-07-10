@@ -1,45 +1,41 @@
-<footer class="bg-slate-900 text-white">
-  <div class="mx-auto grid max-w-7xl gap-10 px-6 py-20 md:grid-cols-4">
-    <div>
-      <h2 class="text-2xl font-bold">KKA RADAR</h2>
+---
+import { getFooter } from '../../services/footer';
 
-      <p class="mt-4 text-slate-400">Lembaga Sertifikasi Kompetensi.</p>
+const footer = await getFooter();
+const activeFooter = footer
+  .filter((item) => item.is_active)
+  .sort((a, b) => a.sort_order - b.sort_order);
+---
+
+<footer class="bg-slate-900 text-white py-8 md:py-12">
+  <div class="container mx-auto px-4 md:px-6">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
+      <div class="text-center md:text-left">
+        <h3 class="text-lg md:text-xl font-bold">KKA RADAR KEDIRI</h3>
+        <p class="text-sm text-slate-400 mt-1">Kompetisi Kompetensi Akademik 2026</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+        {
+          activeFooter.map((item) => (
+            <a
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-slate-800 hover:bg-blue-600 px-3 md:px-4 py-2 rounded-lg transition text-sm md:text-base"
+              title={item.description || item.title}
+            >
+              {item.title}
+            </a>
+          ))
+        }
+      </div>
     </div>
 
-    <div>
-      <h3 class="mb-5 font-bold">Menu</h3>
-
-      <ul class="space-y-3 text-slate-400">
-        <li><a href="/">Home</a></li>
-
-        <li><a href="/tentang">Tentang</a></li>
-
-        <li><a href="/blog">Blog</a></li>
-
-        <li><a href="/galeri">Galeri</a></li>
-      </ul>
+    <div class="border-t border-slate-800 mt-6 md:mt-8 pt-6 md:pt-8 text-center">
+      <p class="text-sm text-slate-400">
+        &copy; {new Date().getFullYear()} KKA Radar Kediri. All rights reserved.
+      </p>
     </div>
-
-    <div>
-      <h3 class="mb-5 font-bold">Kontak</h3>
-
-      <ul class="space-y-3 text-slate-400">
-        <li>📍 Kediri</li>
-
-        <li>📞 08123456789</li>
-
-        <li>✉ admin@kkaradar.id</li>
-      </ul>
-    </div>
-
-    <div>
-      <h3 class="mb-5 font-bold">Jam Operasional</h3>
-
-      <p class="text-slate-400">Senin - Jumat 08.00 - 16.00</p>
-    </div>
-  </div>
-
-  <div class="border-t border-slate-800 py-6 text-center text-slate-500">
-    © 2026 KKA Radar Kediri
   </div>
 </footer>

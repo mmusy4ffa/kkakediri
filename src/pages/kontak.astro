@@ -1,0 +1,164 @@
+---
+import Layout from '../layouts/MainLayout.astro';
+import { supabase } from '../lib/supabase';
+
+const { data: contactInfo } = await supabase
+  .from('contact_info')
+  .select('*')
+  .eq('is_active', true)
+  .order('sort_order', { ascending: true });
+---
+
+<Layout title="Kontak KKA 2026">
+  <section class="py-12 md:py-16">
+    <div class="container mx-auto px-4 md:px-6 max-w-4xl">
+      <div class="text-center mb-10 md:mb-16">
+        <h1 class="text-3xl md:text-4xl font-bold">Kontak Kami</h1>
+        <p class="mt-2 text-slate-500">Hubungi kami untuk informasi lebih lanjut</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        {
+          contactInfo?.map((item) => {
+            let icon = '📧';
+            if (item.key === 'phone') icon = '📞';
+            else if (item.key === 'address') icon = '📍';
+            else if (item.key === 'email') icon = '📧';
+
+            return (
+              <div class="bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100">
+                <div class="text-3xl mb-3">{icon}</div>
+                <h3 class="font-semibold">{item.label || item.key}</h3>
+                <p class="text-sm text-slate-500 break-words">{item.value}</p>
+              </div>
+            );
+          })
+        }
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:p-8">
+        <h2 class="text-2xl font-bold mb-6">Kirim Pesan</h2>
+
+        <form id="contact-form" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Nama Lengkap</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Telepon (Opsional)</label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Subjek</label>
+            <input
+              id="subject"
+              name="subject"
+              type="text"
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Pesan</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              required
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            ></textarea>
+          </div>
+
+          <div id="status-message" class="text-sm text-gray-500"></div>
+
+          <button
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition text-base"
+          >
+            Kirim Pesan
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  const form = document.querySelector('#contact-form');
+  const statusDiv = document.querySelector('#status-message');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const name = document.querySelector('#name').value;
+    const email = document.querySelector('#email').value;
+    const phone = document.querySelector('#phone').value || '';
+    const subject = document.querySelector('#subject').value || '';
+    const message = document.querySelector('#message').value;
+
+    if (!name || !email || !message) {
+      alert('Nama, email, dan pesan wajib diisi');
+      return;
+    }
+
+    statusDiv.textContent = 'Mengirim pesan...';
+    statusDiv.style.color = 'blue';
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          subject,
+          message,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Gagal mengirim pesan');
+      }
+
+      statusDiv.textContent = 'Pesan berhasil dikirim! Terima kasih.';
+      statusDiv.style.color = 'green';
+      alert('Pesan Anda berhasil dikirim!');
+      form.reset();
+    } catch (error) {
+      console.error('Error:', error);
+      statusDiv.textContent = 'Error: ' + error.message;
+      statusDiv.style.color = 'red';
+      alert('Gagal mengirim: ' + error.message);
+    }
+  });
+</script>

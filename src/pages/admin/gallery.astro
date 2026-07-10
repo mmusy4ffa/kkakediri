@@ -1,0 +1,119 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { supabaseServer } from '../../lib/supabaseServer';
+
+export const prerender = false;
+
+const { data: galleries, error } = await supabaseServer
+  .from('galleries')
+  .select('*')
+  .order('sort_order', { ascending: true });
+---
+
+<AdminLayout title="Galeri">
+  <div class="mb-8 flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold">Galeri</h1>
+      <p class="mt-2 text-slate-500">Kelola galeri foto website.</p>
+    </div>
+
+    <a
+      href="/admin/gallery/create"
+      class="rounded-xl bg-blue-600 px-5 py-3 text-white hover:bg-blue-700"
+    >
+      Tambah
+    </a>
+  </div>
+
+  <div class="overflow-hidden rounded-2xl border bg-white">
+    <table class="w-full">
+      <thead class="bg-slate-50">
+        <tr>
+          <th class="p-4 text-left">Gambar</th>
+          <th class="p-4 text-left">Title</th>
+          <th class="p-4 text-left">Urutan</th>
+          <th class="p-4 text-left">Status</th>
+          <th class="p-4 text-left">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          galleries?.map((item) => (
+            <tr class="border-t">
+              <td class="p-4">
+                <img src={item.image} alt={item.title} class="w-20 h-20 object-cover rounded-lg" />
+              </td>
+              <td class="p-4 font-semibold">{item.title}</td>
+              <td class="p-4">{item.sort_order}</td>
+              <td class="p-4">
+                {item.is_active ? (
+                  <span class="rounded-full bg-green-100 px-3 py-1 text-green-700">Aktif</span>
+                ) : (
+                  <span class="rounded-full bg-red-100 px-3 py-1 text-red-700">Nonaktif</span>
+                )}
+              </td>
+              <td class="p-4">
+                <div class="flex gap-3">
+                  <a
+                    href={`/admin/gallery/edit/${item.id}`}
+                    class="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
+                  >
+                    Edit
+                  </a>
+                  <button
+                    data-id={item.id}
+                    data-title={item.title}
+                    class="delete-btn rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                  >
+                    Hapus
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    {
+      galleries?.length === 0 && (
+        <div class="p-8 text-center text-slate-500">Belum ada data galeri.</div>
+      )
+    }
+  </div>
+</AdminLayout>
+
+<script is:inline>
+  document.querySelectorAll('.delete-btn').forEach(function (btn) {
+    btn.addEventListener('click', async function () {
+      const id = this.dataset.id;
+      const title = this.dataset.title;
+
+      if (!confirm('Yakin ingin menghapus "' + title + '"?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/gallery/delete', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: Number(id) }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Gagal menghapus');
+        }
+
+        alert('Berhasil dihapus!');
+        location.reload();
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Gagal menghapus: ' + error.message);
+      }
+    });
+  });
+</script>

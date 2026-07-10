@@ -1,35 +1,36 @@
 ---
-const galleries = [
-  '/gallery/1.jpg',
-  '/gallery/2.jpg',
-  '/gallery/3.jpg',
-  '/gallery/4.jpg',
-  '/gallery/5.jpg',
-  '/gallery/6.jpg',
-];
+import { getGalleries } from '../../services/gallery';
+
+const galleries = await getGalleries();
+const activeGalleries = galleries
+  .filter((item) => item.is_active)
+  .sort((a, b) => a.sort_order - b.sort_order);
 ---
 
-<section class="bg-slate-50 py-24">
-  <div class="mx-auto max-w-7xl px-6">
-    <div class="mb-16 text-center">
-      <span class="font-semibold text-blue-600"> GALERI </span>
+{
+  activeGalleries.length > 0 && (
+    <section class="py-12 md:py-16 bg-white">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold">Galeri</h2>
+          <p class="mt-2 text-slate-500">Dokumentasi kegiatan KKA</p>
+        </div>
 
-      <h2 class="mt-3 text-5xl font-bold">Dokumentasi Kegiatan</h2>
-
-      <p class="mt-4 text-slate-500">Beberapa kegiatan KKA Radar.</p>
-    </div>
-
-    <div class="grid gap-6 md:grid-cols-3">
-      {
-        galleries.map((image) => (
-          <div class="overflow-hidden rounded-3xl">
-            <img
-              src={image}
-              class="h-80 w-full object-cover transition duration-500 hover:scale-110"
-            />
-          </div>
-        ))
-      }
-    </div>
-  </div>
-</section>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 max-w-6xl mx-auto">
+          {activeGalleries.map((item) => (
+            <div class="group relative overflow-hidden rounded-xl aspect-square">
+              <img
+                src={item.image}
+                alt={item.title}
+                class="w-full h-full object-cover transition group-hover:scale-110"
+              />
+              <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-end p-3">
+                <p class="text-white text-sm font-semibold">{item.title}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

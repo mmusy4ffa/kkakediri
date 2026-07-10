@@ -1,0 +1,177 @@
+---
+import Layout from '../layouts/MainLayout.astro';
+---
+
+<Layout title="Daftar KKA 2026">
+  <section class="py-12 md:py-16">
+    <div class="container mx-auto px-4 md:px-6 max-w-2xl">
+      <div class="text-center mb-8 md:mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold">Daftar KKA 2026</h1>
+        <p class="mt-2 text-slate-500">Isi form di bawah ini untuk mendaftar</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:p-8">
+        <form id="daftar-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Nama Lengkap</label>
+            <input
+              id="nama"
+              name="nama"
+              type="text"
+              required
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">No HP / WhatsApp</label>
+            <input
+              id="no_hp"
+              name="no_hp"
+              type="tel"
+              required
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Asal Sekolah / Instansi</label>
+            <input
+              id="asal_sekolah"
+              name="asal_sekolah"
+              type="text"
+              required
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Jenjang</label>
+            <select
+              id="jenjang"
+              name="jenjang"
+              required
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Pilih Jenjang</option>
+              <option value="SD/MI">SD/MI</option>
+              <option value="SMP/MTs">SMP/MTs</option>
+              <option value="SMA/MA/SMK">SMA/MA/SMK</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Region</label>
+            <select
+              id="region"
+              name="region"
+              required
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Pilih Region</option>
+              <option value="Kota Kediri">Kota Kediri</option>
+              <option value="Kabupaten Kediri">Kabupaten Kediri</option>
+              <option value="Kabupaten Nganjuk">Kabupaten Nganjuk</option>
+              <option value="Kabupaten Tulungagung">Kabupaten Tulungagung</option>
+              <option value="Kabupaten Blitar">Kabupaten Blitar</option>
+              <option value="Kota Blitar">Kota Blitar</option>
+              <option value="Kabupaten Trenggalek">Kabupaten Trenggalek</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Tipe Pendaftaran</label>
+            <select
+              id="tipe_pendaftaran"
+              name="tipe_pendaftaran"
+              required
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Pilih Tipe</option>
+              <option value="mandiri">Mandiri (Individu)</option>
+              <option value="kolektif">Kolektif (Sekolah/Instansi)</option>
+            </select>
+          </div>
+
+          <div id="status-message" class="text-sm text-gray-500"></div>
+
+          <button
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition text-base"
+          >
+            Daftar Sekarang
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  const form = document.querySelector('#daftar-form');
+  const statusDiv = document.querySelector('#status-message');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const nama = document.querySelector('#nama').value;
+    const email = document.querySelector('#email').value;
+    const no_hp = document.querySelector('#no_hp').value;
+    const asal_sekolah = document.querySelector('#asal_sekolah').value;
+    const jenjang = document.querySelector('#jenjang').value;
+    const region = document.querySelector('#region').value;
+    const tipe_pendaftaran = document.querySelector('#tipe_pendaftaran').value;
+
+    if (!nama || !email || !no_hp || !asal_sekolah || !jenjang || !region || !tipe_pendaftaran) {
+      alert('Semua field wajib diisi');
+      return;
+    }
+
+    statusDiv.textContent = 'Mendaftar...';
+    statusDiv.style.color = 'blue';
+
+    try {
+      const response = await fetch('/api/pendaftar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nama,
+          email,
+          no_hp,
+          asal_sekolah,
+          jenjang,
+          region,
+          tipe_pendaftaran,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Gagal mendaftar');
+      }
+
+      statusDiv.textContent = 'Pendaftaran berhasil!';
+      statusDiv.style.color = 'green';
+
+      const id = result.data.id;
+      window.location.href = '/invoice?id=' + id;
+    } catch (error) {
+      console.error('Error:', error);
+      statusDiv.textContent = 'Error: ' + error.message;
+      statusDiv.style.color = 'red';
+      alert('Gagal: ' + error.message);
+    }
+  });
+</script>

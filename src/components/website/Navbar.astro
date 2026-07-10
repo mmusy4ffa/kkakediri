@@ -1,65 +1,112 @@
 ---
-const menus = [
-  { title: 'Home', href: '/' },
-  { title: 'Tentang KKA', href: '/tentang' },
-  {
-    title: 'Informasi',
-    dropdown: [
-      {
-        title: 'Pendaftaran Mandiri',
-        href: '/informasi/mandiri',
-      },
-      {
-        title: 'Pendaftaran Kolektif',
-        href: '/informasi/kolektif',
-      },
-    ],
-  },
-  { title: 'Regulasi', href: '/regulasi' },
-  { title: 'Galeri', href: '/galeri' },
-  { title: 'Kontak', href: '/kontak' },
-  { title: 'Blog', href: '/blog' },
-];
+const currentPath = Astro.url.pathname;
 ---
 
-<header class="sticky top-0 z-50 bg-white shadow-sm">
-  <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-    <a href="/" class="flex items-center gap-3">
-      <img src="/logo.png" class="h-12" alt="Logo" />
+<nav class="bg-white shadow-md sticky top-0 z-50">
+  <div class="container mx-auto px-4 md:px-6">
+    <div class="flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="/" class="text-xl md:text-2xl font-bold text-blue-600"> KKA RADAR </a>
 
-      <div>
-        <h2 class="font-bold text-blue-700">KKA RADAR</h2>
+      <!-- Menu Desktop -->
+      <div class="hidden md:flex items-center gap-6 lg:gap-8">
+        <a
+          href="/"
+          class:list={[
+            'hover:text-blue-600 transition',
+            currentPath === '/' ? 'text-blue-600 font-semibold' : 'text-slate-700',
+          ]}
+        >
+          Beranda
+        </a>
+        <a
+          href="/tentang"
+          class:list={[
+            'hover:text-blue-600 transition',
+            currentPath === '/tentang' ? 'text-blue-600 font-semibold' : 'text-slate-700',
+          ]}
+        >
+          Tentang
+        </a>
+        <a
+          href="/blog"
+          class:list={[
+            'hover:text-blue-600 transition',
+            currentPath.startsWith('/blog') ? 'text-blue-600 font-semibold' : 'text-slate-700',
+          ]}
+        >
+          Blog
+        </a>
+        <a
+          href="/kontak"
+          class:list={[
+            'hover:text-blue-600 transition',
+            currentPath === '/kontak' ? 'text-blue-600 font-semibold' : 'text-slate-700',
+          ]}
+        >
+          Kontak
+        </a>
 
-        <p class="text-sm text-slate-500">Kediri</p>
+        <!-- Tombol Cek Status -->
+        <a
+          href="/cek-status"
+          class="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-4 py-2 rounded-xl transition text-sm"
+        >
+          Cek Status
+        </a>
+
+        <!-- Tombol Daftar -->
+        <a
+          href="/daftar"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-xl transition text-sm"
+        >
+          Daftar
+        </a>
       </div>
-    </a>
 
-    <nav>
-      <ul class="flex items-center gap-8">
-        {
-          menus.map((menu) =>
-            menu.dropdown ? (
-              <li class="group relative">
-                <button class="font-medium">{menu.title}</button>
+      <!-- Mobile Menu Toggle -->
+      <button id="menu-toggle" class="md:hidden text-slate-700 hover:text-blue-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
 
-                <div class="absolute left-0 top-full hidden w-64 rounded-xl border bg-white shadow-xl group-hover:block">
-                  {menu.dropdown.map((item) => (
-                    <a href={item.href} class="block px-5 py-4 hover:bg-slate-100">
-                      {item.title}
-                    </a>
-                  ))}
-                </div>
-              </li>
-            ) : (
-              <li>
-                <a href={menu.href} class="font-medium hover:text-blue-600">
-                  {menu.title}
-                </a>
-              </li>
-            )
-          )
-        }
-      </ul>
-    </nav>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-gray-100">
+      <div class="flex flex-col gap-3 pt-4">
+        <a href="/" class="hover:text-blue-600 transition text-slate-700">Beranda</a>
+        <a href="/tentang" class="hover:text-blue-600 transition text-slate-700">Tentang</a>
+        <a href="/blog" class="hover:text-blue-600 transition text-slate-700">Blog</a>
+        <a href="/kontak" class="hover:text-blue-600 transition text-slate-700">Kontak</a>
+        <a
+          href="/cek-status"
+          class="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-4 py-2 rounded-xl transition text-center"
+        >
+          Cek Status
+        </a>
+        <a
+          href="/daftar"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-xl transition text-center"
+        >
+          Daftar
+        </a>
+      </div>
+    </div>
   </div>
-</header>
+</nav>
+
+<script is:inline>
+  const toggleBtn = document.querySelector('#menu-toggle');
+  const mobileMenu = document.querySelector('#mobile-menu');
+
+  if (toggleBtn && mobileMenu) {
+    toggleBtn.addEventListener('click', function () {
+      mobileMenu.classList.toggle('hidden');
+    });
+  }
+</script>

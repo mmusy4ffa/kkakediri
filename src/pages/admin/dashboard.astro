@@ -1,73 +1,118 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import { supabaseServer } from '../../lib/supabaseServer';
+
+export const prerender = false;
+
+const { count: totalPendaftar, error: err1 } = await supabaseServer
+  .from('pendaftar')
+  .select('*', { count: 'exact', head: true });
+
+const { count: pendingPendaftar, error: err2 } = await supabaseServer
+  .from('pendaftar')
+  .select('*', { count: 'exact', head: true })
+  .eq('status_admin', 'pending');
+
+const { count: approvedPendaftar, error: err3 } = await supabaseServer
+  .from('pendaftar')
+  .select('*', { count: 'exact', head: true })
+  .eq('status_admin', 'approved');
+
+const { count: totalBlog, error: err4 } = await supabaseServer
+  .from('blogs')
+  .select('*', { count: 'exact', head: true });
+
+const { count: totalPesan, error: err5 } = await supabaseServer
+  .from('contacts')
+  .select('*', { count: 'exact', head: true });
+
+const { count: pesanBelumDibaca, error: err6 } = await supabaseServer
+  .from('contacts')
+  .select('*', { count: 'exact', head: true })
+  .eq('is_read', false);
+
+const { data: recentPendaftar } = await supabaseServer
+  .from('pendaftar')
+  .select('nama, invoice_number, created_at, status_admin')
+  .order('created_at', { ascending: false })
+  .limit(5);
 ---
 
 <AdminLayout title="Dashboard">
   <div class="mb-8">
     <h1 class="text-3xl font-bold">Dashboard</h1>
-
-    <p class="mt-2 text-slate-500">Selamat datang di CMS KKA Radar.</p>
+    <p class="mt-2 text-slate-500">Ringkasan data KKA Radar Kediri</p>
   </div>
 
-  <div class="grid gap-6 lg:grid-cols-4">
-    <div class="rounded-2xl border bg-white p-6">
-      <p class="text-slate-500">Hero Slider</p>
-
-      <h2 class="mt-4 text-5xl font-bold">3</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-2xl border p-6 shadow-sm">
+      <p class="text-slate-500 text-sm">Total Pendaftar</p>
+      <p class="text-3xl font-bold text-blue-600">{totalPendaftar || 0}</p>
     </div>
-
-    <div class="rounded-2xl border bg-white p-6">
-      <p class="text-slate-500">Artikel</p>
-
-      <h2 class="mt-4 text-5xl font-bold">21</h2>
+    <div class="bg-white rounded-2xl border p-6 shadow-sm">
+      <p class="text-slate-500 text-sm">Pending</p>
+      <p class="text-3xl font-bold text-yellow-500">{pendingPendaftar || 0}</p>
     </div>
-
-    <div class="rounded-2xl border bg-white p-6">
-      <p class="text-slate-500">Galeri</p>
-
-      <h2 class="mt-4 text-5xl font-bold">142</h2>
+    <div class="bg-white rounded-2xl border p-6 shadow-sm">
+      <p class="text-slate-500 text-sm">Approved</p>
+      <p class="text-3xl font-bold text-green-600">{approvedPendaftar || 0}</p>
     </div>
-
-    <div class="rounded-2xl border bg-white p-6">
-      <p class="text-slate-500">Mentor</p>
-
-      <h2 class="mt-4 text-5xl font-bold">15</h2>
+    <div class="bg-white rounded-2xl border p-6 shadow-sm">
+      <p class="text-slate-500 text-sm">Total Blog</p>
+      <p class="text-3xl font-bold text-purple-600">{totalBlog || 0}</p>
     </div>
   </div>
 
-  <div class="mt-8 grid gap-6 lg:grid-cols-2">
-    <div class="rounded-2xl border bg-white p-6">
-      <h2 class="mb-5 text-xl font-semibold">Aktivitas Terbaru</h2>
-
-      <div class="space-y-4">
-        <div class="rounded-xl bg-slate-100 p-4">Hero berhasil diperbarui</div>
-
-        <div class="rounded-xl bg-slate-100 p-4">Artikel baru ditambahkan</div>
-
-        <div class="rounded-xl bg-slate-100 p-4">Galeri berhasil diupload</div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded-2xl border p-6 shadow-sm">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold">Pesan Masuk</h2>
+        <span class="text-sm text-slate-500">Total: {totalPesan || 0}</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-2xl font-bold text-blue-600">{pesanBelumDibaca || 0}</span>
+        <span class="text-sm text-slate-500">Belum dibaca</span>
+        <a href="/admin/contact" class="ml-auto text-blue-600 hover:underline text-sm"
+          >Lihat semua →</a
+        >
       </div>
     </div>
 
-    <div class="rounded-2xl border bg-white p-6">
-      <h2 class="mb-5 text-xl font-semibold">Quick Menu</h2>
-
-      <div class="grid grid-cols-2 gap-4">
-        <a href="/admin/website/hero" class="rounded-xl border p-5 text-center hover:bg-slate-100">
-          Hero
-        </a>
-
-        <a href="/admin/blog" class="rounded-xl border p-5 text-center hover:bg-slate-100">
-          Blog
-        </a>
-
-        <a href="/admin/gallery" class="rounded-xl border p-5 text-center hover:bg-slate-100">
-          Galeri
-        </a>
-
-        <a href="/admin/regulation" class="rounded-xl border p-5 text-center hover:bg-slate-100">
-          Regulasi
-        </a>
+    <div class="bg-white rounded-2xl border p-6 shadow-sm">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold">Pendaftar Terbaru</h2>
+        <a href="/admin/pendaftar" class="text-blue-600 hover:underline text-sm">Lihat semua →</a>
       </div>
+      {
+        recentPendaftar && recentPendaftar.length > 0 ? (
+          recentPendaftar.map((item) => (
+            <div class="flex justify-between items-center py-2 border-b last:border-0">
+              <div>
+                <p class="font-semibold text-sm">{item.nama}</p>
+                <p class="text-xs text-slate-500">{item.invoice_number}</p>
+              </div>
+              <div class="text-right">
+                <span
+                  class:list={[
+                    'text-xs px-2 py-1 rounded-full',
+                    item.status_admin === 'approved' ? 'bg-green-100 text-green-700' : '',
+                    item.status_admin === 'rejected' ? 'bg-red-100 text-red-700' : '',
+                    item.status_admin === 'pending' ? 'bg-yellow-100 text-yellow-700' : '',
+                    !item.status_admin ? 'bg-gray-100 text-gray-700' : '',
+                  ]}
+                >
+                  {item.status_admin || 'pending'}
+                </span>
+                <p class="text-xs text-slate-400 mt-1">
+                  {new Date(item.created_at).toLocaleDateString('id-ID')}
+                </p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p class="text-slate-500 text-sm">Belum ada pendaftar.</p>
+        )
+      }
     </div>
   </div>
 </AdminLayout>

@@ -2,6 +2,8 @@
 import { getHeroes } from '../../services/hero';
 
 const heroes = await getHeroes();
+
+export const prerender = false;
 ---
 
 <section class="relative h-[700px] overflow-hidden">

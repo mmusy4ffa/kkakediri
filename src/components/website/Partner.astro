@@ -1,25 +1,38 @@
 ---
-const partners = [
-  '/partner/1.png',
-  '/partner/2.png',
-  '/partner/3.png',
-  '/partner/4.png',
-  '/partner/5.png',
-];
+import { getPartners } from '../../services/partner';
+
+const partners = await getPartners();
+const activePartners = partners
+  .filter((item) => item.is_active)
+  .sort((a, b) => a.sort_order - b.sort_order);
 ---
 
-<section class="bg-white py-20">
-  <div class="mx-auto max-w-7xl px-6">
-    <h2 class="mb-12 text-center text-4xl font-bold">Partner Kami</h2>
+{
+  activePartners.length > 0 && (
+    <section class="py-12 md:py-16 bg-slate-50">
+      <div class="container mx-auto px-4 md:px-6 max-w-6xl">
+        <div class="text-center mb-8 md:mb-12">
+          <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold">Partner Kami</h2>
+          <p class="mt-2 text-slate-500">Bersama menuju generasi unggul</p>
+        </div>
 
-    <div class="grid grid-cols-2 gap-8 md:grid-cols-5">
-      {
-        partners.map((partner) => (
-          <div class="rounded-2xl border border-slate-200 p-6">
-            <img src={partner} class="mx-auto h-16 object-contain" />
-          </div>
-        ))
-      }
-    </div>
-  </div>
-</section>
+        <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+          {activePartners.map((item) => (
+            <a
+              href={item.website || '#'}
+              target={item.website ? '_blank' : '_self'}
+              rel={item.website ? 'noopener noreferrer' : ''}
+              class="grayscale hover:grayscale-0 transition duration-300"
+            >
+              {item.logo ? (
+                <img src={item.logo} alt={item.name} class="h-12 md:h-16 w-auto object-contain" />
+              ) : (
+                <span class="text-lg font-semibold text-slate-600">{item.name}</span>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

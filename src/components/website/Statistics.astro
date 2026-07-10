@@ -1,34 +1,25 @@
 ---
-const stats = [
-  {
-    number: '10.000+',
-    title: 'Peserta',
-  },
-  {
-    number: '120+',
-    title: 'Mitra',
-  },
-  {
-    number: '50+',
-    title: 'Skema Sertifikasi',
-  },
-  {
-    number: '15',
-    title: 'Tahun Pengalaman',
-  },
-];
+import { getStatistics } from '../../services/statistic';
+
+const stats = await getStatistics();
+const activeStats = stats
+  .filter((item) => item.is_active)
+  .sort((a, b) => a.sort_order - b.sort_order);
 ---
 
-<section class="bg-blue-600 py-20">
-  <div class="mx-auto grid max-w-7xl gap-10 px-6 text-center text-white md:grid-cols-4">
-    {
-      stats.map((stat) => (
-        <div>
-          <h2 class="text-5xl font-bold">{stat.number}</h2>
-
-          <p class="mt-4 text-lg">{stat.title}</p>
+{
+  activeStats.length > 0 && (
+    <section class="py-12 md:py-16 bg-blue-600 text-white">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
+          {activeStats.map((item) => (
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl lg:text-5xl font-bold">{item.value}</div>
+              <div class="text-sm md:text-base mt-2 text-blue-100">{item.label}</div>
+            </div>
+          ))}
         </div>
-      ))
-    }
-  </div>
-</section>
+      </div>
+    </section>
+  )
+}

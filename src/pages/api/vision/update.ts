@@ -15,11 +15,12 @@ export const PUT: APIRoute = async ({ request }) => {
       });
     }
 
-    const updateData: any = {};
-    if (title !== undefined) updateData.title = title;
-    if (description !== undefined) updateData.description = description;
-    if (sort_order !== undefined) updateData.sort_order = sort_order;
-    if (is_active !== undefined) updateData.is_active = is_active;
+    const updateData = {
+      title: title,
+      description: description || '',
+      sort_order: sort_order || 1,
+      is_active: is_active ?? true,
+    };
 
     const { data, error } = await supabaseServer
       .from('visions')
@@ -28,7 +29,6 @@ export const PUT: APIRoute = async ({ request }) => {
       .select();
 
     if (error) {
-      console.error('Update vision error:', error);
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
