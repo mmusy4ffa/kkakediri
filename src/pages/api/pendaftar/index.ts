@@ -47,11 +47,17 @@ export const POST: APIRoute = async ({ request }) => {
     const biaya = biayaMap[jenjang] || 0;
     const rekening = settingMap['rekening'] || 'Bank BNI 1234567890 a.n. Panitia KKA';
 
-    const { count } = await supabaseServer
-      .from('pendaftar')
-      .select('id', { count: 'exact', head: true });
+    const { data: invoiceData, error: invoiceError } =
+      await supabaseServer.rpc('generate_invoice_number');
 
-    const invoiceNumber = `KKA2026-${String((count || 0) + 1).padStart(4, '0')}`;
+    if (invoiceError || !invoiceData) {
+      return new Response(JSON.stringify({ error: 'Gagal generate invoice number' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const invoiceNumber = invoiceData as string;
 
     const { data, error } = await supabaseServer
       .from('pendaftar')
