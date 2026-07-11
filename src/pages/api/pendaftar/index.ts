@@ -47,11 +47,13 @@ export const POST: APIRoute = async ({ request }) => {
     const biaya = biayaMap[jenjang] || 0;
     const rekening = settingMap['rekening'] || 'Bank BNI 1234567890 a.n. Panitia KKA';
 
+    // Generate invoice number secara atomic lewat sequence di database
     const { data: invoiceData, error: invoiceError } =
       await supabaseServer.rpc('generate_invoice_number');
 
     if (invoiceError || !invoiceData) {
-      return new Response(JSON.stringify({ error: 'Gagal generate invoice number' }), {
+      console.error('Invoice generation error:', invoiceError);
+      return new Response(JSON.stringify({ error: 'Gagal generate nomor invoice' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       });
