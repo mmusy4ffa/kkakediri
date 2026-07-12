@@ -6,19 +6,38 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<header class="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-8">
-  <div>
-    <h2 class="text-2xl font-bold">
-      {title}
-    </h2>
+<header
+  class="flex h-16 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 sm:h-20 sm:px-6 lg:px-8"
+>
+  <div class="flex min-w-0 items-center gap-3">
+    <button
+      type="button"
+      onclick="window.toggleAdminSidebar && window.toggleAdminSidebar()"
+      class="shrink-0 rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
+      aria-label="Buka menu"
+    >
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
 
-    <p class="text-sm text-slate-500">Admin Dashboard</p>
+    <div class="min-w-0">
+      <h2 class="truncate text-lg font-bold sm:text-2xl">
+        {title}
+      </h2>
+
+      <p class="hidden text-sm text-slate-500 sm:block">Admin Dashboard</p>
+    </div>
   </div>
 
-  <div class="flex items-center gap-3">
-    <div class="h-11 w-11 rounded-full bg-blue-600"></div>
+  <div class="flex shrink-0 items-center gap-3">
+    <div class="h-9 w-9 rounded-full bg-blue-600 sm:h-11 sm:w-11"></div>
 
-    <div>
+    <div class="hidden sm:block">
       <p class="font-semibold">Administrator</p>
 
       <p class="text-sm text-slate-500">Super Admin</p>

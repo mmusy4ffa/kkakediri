@@ -65,15 +65,40 @@ const menus: MenuGroup[] = [
 ];
 ---
 
-<aside
-  class="fixed left-0 top-0 h-screen w-72 overflow-y-auto border-r border-slate-200 bg-white flex flex-col"
+<!-- Overlay (mobile only) -->
+<div
+  id="sidebar-overlay"
+  class="fixed inset-0 z-40 hidden bg-slate-900/50 lg:hidden"
+  aria-hidden="true"
 >
-  <div class="border-b border-slate-200 p-6">
-    <h1 class="text-2xl font-bold text-blue-600">KKA RADAR</h1>
-    <p class="text-sm text-slate-500">Content Management System</p>
+</div>
+
+<aside
+  id="admin-sidebar"
+  class="fixed left-0 top-0 z-50 flex h-screen w-72 -translate-x-full flex-col overflow-y-auto border-r border-slate-200 bg-white transition-transform duration-300 ease-in-out lg:translate-x-0"
+>
+  <div class="flex items-center justify-between border-b border-slate-200 p-5 sm:p-6">
+    <div>
+      <h1 class="text-xl font-bold text-blue-600 sm:text-2xl">KKA RADAR</h1>
+      <p class="text-xs text-slate-500 sm:text-sm">Content Management System</p>
+    </div>
+    <button
+      id="sidebar-close"
+      type="button"
+      class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
+      aria-label="Tutup menu"
+    >
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
   </div>
 
-  <div class="flex-1 p-4 overflow-y-auto">
+  <div class="flex-1 overflow-y-auto p-4">
     {
       menus.map((group) => (
         <div class="mb-6">
@@ -100,9 +125,38 @@ const menus: MenuGroup[] = [
   </div>
 
   <div class="border-t border-slate-200 p-4">
-    <div class="flex items-center justify-between">
-      <span class="text-sm text-slate-600">Halo, {username}</span>
-      <a href="/api/admin/logout" class="text-sm text-red-600 hover:underline"> Logout </a>
+    <div class="flex items-center justify-between gap-2">
+      <span class="truncate text-sm text-slate-600">Halo, {username}</span>
+      <a href="/api/admin/logout" class="shrink-0 text-sm text-red-600 hover:underline"> Logout </a>
     </div>
   </div>
 </aside>
+
+<script is:inline>
+  (function () {
+    const sidebar = document.getElementById('admin-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const closeBtn = document.getElementById('sidebar-close');
+
+    function openSidebar() {
+      sidebar?.classList.remove('-translate-x-full');
+      overlay?.classList.remove('hidden');
+    }
+
+    function closeSidebar() {
+      sidebar?.classList.add('-translate-x-full');
+      overlay?.classList.add('hidden');
+    }
+
+    window.toggleAdminSidebar = function () {
+      if (sidebar?.classList.contains('-translate-x-full')) {
+        openSidebar();
+      } else {
+        closeSidebar();
+      }
+    };
+
+    overlay?.addEventListener('click', closeSidebar);
+    closeBtn?.addEventListener('click', closeSidebar);
+  })();
+</script>

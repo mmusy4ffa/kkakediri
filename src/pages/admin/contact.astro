@@ -19,7 +19,7 @@ const { data: messages } = await supabaseServer
 
 <AdminLayout title="Kontak">
   <div class="mb-8">
-    <h1 class="text-3xl font-bold">Kontak</h1>
+    <h1 class="text-2xl font-bold sm:text-3xl">Kontak</h1>
     <p class="mt-2 text-slate-500">Kelola informasi kontak dan pesan masuk.</p>
   </div>
 
@@ -55,64 +55,66 @@ const { data: messages } = await supabaseServer
     <div class="p-4 border-b">
       <h2 class="text-xl font-bold">Pesan Masuk</h2>
     </div>
-    <table class="w-full">
-      <thead class="bg-slate-50">
-        <tr>
-          <th class="p-4 text-left">Status</th>
-          <th class="p-4 text-left">Nama</th>
-          <th class="p-4 text-left">Email</th>
-          <th class="p-4 text-left">Subjek</th>
-          <th class="p-4 text-left">Tanggal</th>
-          <th class="p-4 text-left">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          messages?.map((item) => (
-            <tr class="border-t">
-              <td class="p-4">
-                {item.is_read ? (
-                  <span class="rounded-full bg-green-100 px-3 py-1 text-green-700 text-xs">
-                    Dibaca
-                  </span>
-                ) : (
-                  <span class="rounded-full bg-yellow-100 px-3 py-1 text-yellow-700 text-xs">
-                    Belum Dibaca
-                  </span>
-                )}
-              </td>
-              <td class="p-4 font-semibold">{item.name}</td>
-              <td class="p-4">{item.email}</td>
-              <td class="p-4 max-w-xs truncate">{item.subject || '-'}</td>
-              <td class="p-4 text-sm">
-                {new Date(item.created_at).toLocaleDateString('id-ID', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                })}
-              </td>
-              <td class="p-4">
-                <div class="flex gap-3">
-                  <a
-                    href={`/admin/contact/${item.id}`}
-                    class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 text-sm"
-                  >
-                    Detail
-                  </a>
-                  <button
-                    data-id={item.id}
-                    data-name={item.name}
-                    class="delete-btn rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 text-sm"
-                  >
-                    Hapus
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[720px]">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="p-4 text-left">Status</th>
+            <th class="p-4 text-left">Nama</th>
+            <th class="p-4 text-left">Email</th>
+            <th class="p-4 text-left">Subjek</th>
+            <th class="p-4 text-left">Tanggal</th>
+            <th class="p-4 text-left">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            messages?.map((item) => (
+              <tr class="border-t">
+                <td class="p-4">
+                  {item.is_read ? (
+                    <span class="rounded-full bg-green-100 px-3 py-1 text-green-700 text-xs">
+                      Dibaca
+                    </span>
+                  ) : (
+                    <span class="rounded-full bg-yellow-100 px-3 py-1 text-yellow-700 text-xs">
+                      Belum Dibaca
+                    </span>
+                  )}
+                </td>
+                <td class="p-4 font-semibold">{item.name}</td>
+                <td class="p-4">{item.email}</td>
+                <td class="p-4 max-w-xs truncate">{item.subject || '-'}</td>
+                <td class="p-4 text-sm">
+                  {new Date(item.created_at).toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </td>
+                <td class="p-4">
+                  <div class="flex gap-3">
+                    <a
+                      href={`/admin/contact/${item.id}`}
+                      class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 text-sm"
+                    >
+                      Detail
+                    </a>
+                    <button
+                      data-id={item.id}
+                      data-name={item.name}
+                      class="delete-btn rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 text-sm"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
 
     {
       messages?.length === 0 && (

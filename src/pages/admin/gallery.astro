@@ -11,9 +11,9 @@ const { data: galleries, error } = await supabaseServer
 ---
 
 <AdminLayout title="Galeri">
-  <div class="mb-8 flex items-center justify-between">
+  <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
     <div>
-      <h1 class="text-3xl font-bold">Galeri</h1>
+      <h1 class="text-2xl font-bold sm:text-3xl">Galeri</h1>
       <p class="mt-2 text-slate-500">Kelola galeri foto website.</p>
     </div>
 
@@ -26,54 +26,60 @@ const { data: galleries, error } = await supabaseServer
   </div>
 
   <div class="overflow-hidden rounded-2xl border bg-white">
-    <table class="w-full">
-      <thead class="bg-slate-50">
-        <tr>
-          <th class="p-4 text-left">Gambar</th>
-          <th class="p-4 text-left">Title</th>
-          <th class="p-4 text-left">Urutan</th>
-          <th class="p-4 text-left">Status</th>
-          <th class="p-4 text-left">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          galleries?.map((item) => (
-            <tr class="border-t">
-              <td class="p-4">
-                <img src={item.image} alt={item.title} class="w-20 h-20 object-cover rounded-lg" />
-              </td>
-              <td class="p-4 font-semibold">{item.title}</td>
-              <td class="p-4">{item.sort_order}</td>
-              <td class="p-4">
-                {item.is_active ? (
-                  <span class="rounded-full bg-green-100 px-3 py-1 text-green-700">Aktif</span>
-                ) : (
-                  <span class="rounded-full bg-red-100 px-3 py-1 text-red-700">Nonaktif</span>
-                )}
-              </td>
-              <td class="p-4">
-                <div class="flex gap-3">
-                  <a
-                    href={`/admin/gallery/edit/${item.id}`}
-                    class="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
-                  >
-                    Edit
-                  </a>
-                  <button
-                    data-id={item.id}
-                    data-title={item.title}
-                    class="delete-btn rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-                  >
-                    Hapus
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[720px]">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="p-4 text-left">Gambar</th>
+            <th class="p-4 text-left">Title</th>
+            <th class="p-4 text-left">Urutan</th>
+            <th class="p-4 text-left">Status</th>
+            <th class="p-4 text-left">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            galleries?.map((item) => (
+              <tr class="border-t">
+                <td class="p-4">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    class="w-20 h-20 object-cover rounded-lg"
+                  />
+                </td>
+                <td class="p-4 font-semibold">{item.title}</td>
+                <td class="p-4">{item.sort_order}</td>
+                <td class="p-4">
+                  {item.is_active ? (
+                    <span class="rounded-full bg-green-100 px-3 py-1 text-green-700">Aktif</span>
+                  ) : (
+                    <span class="rounded-full bg-red-100 px-3 py-1 text-red-700">Nonaktif</span>
+                  )}
+                </td>
+                <td class="p-4">
+                  <div class="flex gap-3">
+                    <a
+                      href={`/admin/gallery/edit/${item.id}`}
+                      class="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
+                    >
+                      Edit
+                    </a>
+                    <button
+                      data-id={item.id}
+                      data-title={item.title}
+                      class="delete-btn rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
 
     {
       galleries?.length === 0 && (
